@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Home — My App{% endblock %}
+{% block content %}
+
+<div class="card">
+  <h1>Welcome to My App</h1>
+  <p>This is a <strong>public page</strong> — anyone can view it, no login required.</p>
+</div>
+
+<div class="card">
+  <h1>Available Pages</h1>
+  <p style="margin-bottom:16px">🔓 <strong>Public</strong> — no sign-in needed</p>
+  <p>• <a href="/">Home</a></p>
+  <p>• <a href="/about">About</a></p>
+  <br>
+  <p style="margin-bottom:16px">🔒 <strong>Protected</strong> — requires Azure AD login (org members only)</p>
+  <p>• <a href="/dashboard">Dashboard</a></p>
+  <p>• <a href="/profile">Profile</a></p>
+</div>
+
+{% endblock %}

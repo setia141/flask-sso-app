@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Profile — My App{% endblock %}
+{% block content %}
+
+<div class="info-box">
+  🔒 This page is <strong>protected</strong> — only signed-in org members can see it.
+</div>
+
+<div class="card">
+  <h1>Profile</h1>
+  <p><strong>Name:</strong> {{ user.get('name', '—') }}</p>
+  <p style="margin-top:8px"><strong>Email:</strong> {{ user.get('preferred_username', '—') }}</p>
+  <p style="margin-top:8px"><strong>Object ID:</strong> {{ user.get('oid', '—') }}</p>
+  <p style="margin-top:8px"><strong>Tenant ID:</strong> {{ user.get('tid', '—') }}</p>
+</div>
+
+{% endblock %}

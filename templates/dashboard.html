@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — My App{% endblock %}
+{% block content %}
+
+<div class="info-box">
+  🔒 This page is <strong>protected</strong> — only signed-in org members can see it.
+</div>
+
+<div class="card">
+  <h1>Dashboard</h1>
+  <p>Hello, <strong>{{ user.get('name', user.get('preferred_username', 'User')) }}</strong>! You are signed in.</p>
+  <br>
+  <p>Email: {{ user.get('preferred_username', '—') }}</p>
+  <p>Tenant: {{ user.get('tid', '—') }}</p>
+</div>
+
+<div class="card">
+  <h1>Your Content</h1>
+  <p>This area is only visible to authenticated members of your organisation.</p>
+</div>
+
+{% endblock %}
