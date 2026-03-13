@@ -15,6 +15,11 @@
     nav a:hover { color: #4285f4; }
     nav .spacer { flex: 1; }
     nav .badge { font-size: 12px; background: #e8f0fe; color: #4285f4; border-radius: 12px; padding: 3px 10px; font-weight: 600; }
+    nav .role-badge { font-size: 11px; border-radius: 12px; padding: 3px 10px; font-weight: 600; }
+    nav .role-admin  { background: #fce8e6; color: #ea4335; }
+    nav .role-user   { background: #e6f4ea; color: #34a853; }
+    nav .role-viewer { background: #fef7e0; color: #f9ab00; }
+    nav .role-default{ background: #f1f3f4; color: #666; }
     nav .lock { font-size: 12px; color: #999; }
     .btn { display: inline-block; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; }
     .btn-primary { background: #4285f4; color: #fff; }
@@ -38,12 +43,17 @@
 <nav>
   <a href="/" class="brand">My App</a>
   <a href="/">Home</a>
-  <a href="/about">About <span class="lock">🔓</span></a>
-  <a href="/dashboard">Dashboard <span class="lock">🔒</span></a>
-  <a href="/profile">Profile <span class="lock">🔒</span></a>
+  <a href="/about">About</a>
+  {% if user and 'admin' in user.get('roles', []) %}
+  <a href="/dashboard">Dashboard</a>
+  <a href="/profile">Profile</a>
+  {% endif %}
   <div class="spacer"></div>
   {% if user %}
     <span class="badge">{{ user.get('name', user.get('preferred_username', 'User')) }}</span>
+    {% for role in user.get('roles', []) %}
+      <span class="role-badge role-{{ role }}">{{ role }}</span>
+    {% endfor %}
     <a href="/logout" class="btn btn-outline">Sign out</a>
   {% else %}
     <a href="/login" class="btn btn-primary">Sign in</a>

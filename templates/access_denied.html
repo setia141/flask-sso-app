@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Access Denied — My App{% endblock %}
+{% block content %}
+
+<div class="card" style="border-left: 4px solid #ea4335;">
+  <h1 style="color:#ea4335;">Access Denied</h1>
+  <p style="margin-top:12px">You do not have the required role to view this page.</p>
+  <p style="margin-top:8px">Required role(s): <strong>{{ required_roles | join(', ') }}</strong></p>
+  <p style="margin-top:8px">Your account: <strong>{{ user.get('preferred_username', '—') }}</strong></p>
+  <br>
+  <p>If you believe this is a mistake, please contact your administrator to have the correct role assigned to your account in Azure AD.</p>
+  <br>
+  <a href="/" class="btn btn-primary" style="display:inline-block">Go to Home</a>
+</div>
+
+{% endblock %}

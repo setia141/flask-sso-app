@@ -12,6 +12,13 @@
   <p style="margin-top:8px"><strong>Email:</strong> {{ user.get('preferred_username', '—') }}</p>
   <p style="margin-top:8px"><strong>Object ID:</strong> {{ user.get('oid', '—') }}</p>
   <p style="margin-top:8px"><strong>Tenant ID:</strong> {{ user.get('tid', '—') }}</p>
+  <p style="margin-top:8px"><strong>Roles:</strong>
+    {% if user.get('roles') %}
+      {{ user['roles'] | join(', ') }}
+    {% else %}
+      No roles assigned
+    {% endif %}
+  </p>
 </div>
 
 {% endblock %}

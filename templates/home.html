@@ -9,13 +9,15 @@
 
 <div class="card">
   <h1>Available Pages</h1>
-  <p style="margin-bottom:16px">🔓 <strong>Public</strong> — no sign-in needed</p>
+  <p style="margin-bottom:16px">🔒 <strong>SSO</strong> — any signed-in org member</p>
   <p>• <a href="/">Home</a></p>
   <p>• <a href="/about">About</a></p>
   <br>
-  <p style="margin-bottom:16px">🔒 <strong>Protected</strong> — requires Azure AD login (org members only)</p>
+  {% if user and 'admin' in user.get('roles', []) %}
+  <p style="margin-bottom:16px">🔒 <strong>Admin only</strong></p>
   <p>• <a href="/dashboard">Dashboard</a></p>
   <p>• <a href="/profile">Profile</a></p>
+  {% endif %}
 </div>
 
 {% endblock %}
