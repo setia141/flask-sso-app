@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flask SSO App — Solution Diagram</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      padding: 40px;
+      color: #1a1a1a;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1a1a1a;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 36px;
+    }
+
+    /* ── Layout ── */
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ── Zones ── */
+    .zone {
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .zone-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .zone-browser  { background: #f1f3f4; border: 2px solid #dadce0; }
+    .zone-flask    { background: #e8f0fe; border: 2px solid #4285f4; }
+    .zone-azure    { background: #fce8e6; border: 2px solid #ea4335; }
+
+    .zone-browser .zone-label  { color: #555; }
+    .zone-flask   .zone-label  { color: #1a73e8; }
+    .zone-azure   .zone-label  { color: #c5221f; }
+
+    /* ── Arrow between zones ── */
+    .arrow-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 10px 0;
+    }
+    .arrow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .arrow-label {
+      font-size: 11px;
+      color: #555;
+      font-weight: 600;
+    }
+    .arrow-svg { display: block; }
+
+    /* ── Boxes ── */
+    .boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      flex: 1;
+      min-width: 160px;
+    }
+    .box-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .box-title .icon {
+      font-size: 18px;
+    }
+    .box ul {
+      list-style: none;
+      padding: 0;
+    }
+    .box ul li {
+      font-size: 12px;
+      color: #555;
+      padding: 3px 0;
+      border-bottom: 1px solid #f1f3f4;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .box ul li:last-child { border-bottom: none; }
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .badge-green  { background: #e6f4ea; color: #34a853; }
+    .badge-blue   { background: #e8f0fe; color: #1a73e8; }
+    .badge-red    { background: #fce8e6; color: #ea4335; }
+    .badge-grey   { background: #f1f3f4; color: #666; }
+
+    /* ── Flow section ── */
+    .flow-section {
+      margin-top: 40px;
+    }
+    .flow-section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    .flows {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .flow-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      flex: 1;
+      min-width: 260px;
+    }
+    .flow-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-num-blue  { background: #e8f0fe; color: #1a73e8; }
+    .step-num-red   { background: #fce8e6; color: #ea4335; }
+    .step-num-green { background: #e6f4ea; color: #34a853; }
+    .step-text {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.5;
+    }
+    .step-text strong { color: #1a1a1a; }
+
+    /* ── Access matrix ── */
+    .matrix-section {
+      margin-top: 40px;
+    }
+    .matrix-section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    th {
+      background: #f8f9fa;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid #e8eaed;
+      color: #444;
+    }
+    td {
+      font-size: 12px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #f1f3f4;
+      color: #444;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    /* ── Tech stack ── */
+    .tech-section {
+      margin-top: 40px;
+    }
+    .tech-section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .tech-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .tech-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      flex: 1;
+      min-width: 160px;
+    }
+    .tech-card h4 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+    .tech-item {
+      font-size: 12px;
+      color: #444;
+      padding: 4px 0;
+      border-bottom: 1px solid #f1f3f4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tech-item:last-child { border-bottom: none; }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 11px;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Flask App — Azure AD SSO Solution Diagram</h1>
+<p class="subtitle">Architecture overview for review · OAuth 2.0 Authorization Code Flow + Role-Based Access Control</p>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ARCHITECTURE ZONES                                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="diagram">
+
+  <!-- BROWSER -->
+  <div class="zone zone-browser">
+    <div class="zone-label">Client — Browser</div>
+    <div class="boxes">
+      <div class="box">
+        <div class="box-title"><span class="icon">🌐</span> User</div>
+        <ul>
+          <li>SSO Sign in / Sign out</li>
+          <li>Navigate pages</li>
+          <li>Session ID cookie (small)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arrow down -->
+  <div class="arrow-block">
+    <div class="arrow-item">
+      <span class="arrow-label">HTTPS Request</span>
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+    </div>
+    <div class="arrow-item">
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8" style="transform:rotate(180deg)"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+      <span class="arrow-label">HTTPS Response</span>
+    </div>
+  </div>
+
+  <!-- FLASK -->
+  <div class="zone zone-flask">
+    <div class="zone-label">Flask Application — localhost:3000</div>
+    <div class="boxes">
+
+      <div class="box">
+        <div class="box-title"><span class="icon">🔓</span> SSO Pages</div>
+        <ul>
+          <li><span class="badge badge-blue">@login_required</span></li>
+          <li>/ &nbsp; Home</li>
+          <li>/about &nbsp; About</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">🔒</span> Admin Pages</div>
+        <ul>
+          <li><span class="badge badge-red">@role_required("admin")</span></li>
+          <li>/dashboard &nbsp; Dashboard</li>
+          <li>/profile &nbsp; Profile</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">⚙️</span> Auth Routes</div>
+        <ul>
+          <li>/login — Start OAuth flow</li>
+          <li>/callback — Token exchange</li>
+          <li>/logout — Clear session</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">💾</span> Session Store</div>
+        <ul>
+          <li>flask-session (filesystem)</li>
+          <li>Server-side storage</li>
+          <li>Token cache + user claims</li>
+          <li>Cookie = session ID only</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Arrow down -->
+  <div class="arrow-block">
+    <div class="arrow-item">
+      <span class="arrow-label">① Redirect to login</span>
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+    </div>
+    <div class="arrow-item">
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8" style="transform:rotate(180deg)"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+      <span class="arrow-label">④ ID token + roles</span>
+    </div>
+    <div class="arrow-item">
+      <span class="arrow-label">② Auth code request</span>
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+    </div>
+    <div class="arrow-item">
+      <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
+      <svg width="12" height="8" style="transform:rotate(180deg)"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
+      <span class="arrow-label">③ Auth code callback</span>
+    </div>
+  </div>
+
+  <!-- AZURE AD -->
+  <div class="zone zone-azure">
+    <div class="zone-label">Microsoft Azure Active Directory</div>
+    <div class="boxes">
+
+      <div class="box">
+        <div class="box-title"><span class="icon">🏢</span> App Registration</div>
+        <ul>
+          <li>Client ID</li>
+          <li>Client Secret</li>
+          <li>Tenant ID</li>
+          <li>Redirect URI: /callback</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">🎭</span> App Roles</div>
+        <ul>
+          <li><span class="badge badge-red">admin</span> &nbsp; Admin role</li>
+          <li>Defined in App Manifest</li>
+          <li>Included in ID token</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">👥</span> Users & Groups</div>
+        <ul>
+          <li>Security Group: App-Admin</li>
+          <li>Assigned role: admin</li>
+          <li>All org users can SSO</li>
+          <li>Only admins get role claim</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="box-title"><span class="icon">🔑</span> OAuth 2.0 / OIDC</div>
+        <ul>
+          <li>Authorization endpoint</li>
+          <li>Token endpoint</li>
+          <li>MSAL Python library</li>
+          <li>CSRF state validation</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end diagram -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- AUTH FLOWS                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="flow-section">
+  <h2>Authentication Flows</h2>
+  <div class="flows">
+
+    <div class="flow-card">
+      <h3>🔵 SSO Login Flow (all org users)</h3>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">1</div>
+        <div class="step-text">User visits any page (e.g. <strong>/</strong> or <strong>/about</strong>)</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">2</div>
+        <div class="step-text"><strong>@login_required</strong> checks session — no user found</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">3</div>
+        <div class="step-text">Flask redirects to <strong>/login</strong> — MSAL generates Azure AD auth URL</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">4</div>
+        <div class="step-text">Browser redirects to <strong>Microsoft login page</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">5</div>
+        <div class="step-text">User signs in with their <strong>org Microsoft account</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">6</div>
+        <div class="step-text">Azure AD redirects to <strong>/callback</strong> with auth code</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">7</div>
+        <div class="step-text">Flask exchanges auth code for <strong>ID token</strong> via MSAL</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-blue">8</div>
+        <div class="step-text">User claims stored in <strong>server-side session</strong> — redirected to original page</div>
+      </div>
+    </div>
+
+    <div class="flow-card">
+      <h3>🔴 Admin Role Check Flow</h3>
+      <div class="flow-step">
+        <div class="step-num step-num-red">1</div>
+        <div class="step-text">Signed-in user visits <strong>/dashboard</strong> or <strong>/profile</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-red">2</div>
+        <div class="step-text"><strong>@role_required("admin")</strong> reads <strong>roles</strong> claim from session</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-red">3a</div>
+        <div class="step-text">✅ User has <strong>admin</strong> role → page is rendered</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-red">3b</div>
+        <div class="step-text">❌ User does not have <strong>admin</strong> role → <strong>403 Access Denied</strong> page shown</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-red">4</div>
+        <div class="step-text">Admin tabs are also <strong>hidden in the nav bar</strong> for non-admin users</div>
+      </div>
+    </div>
+
+    <div class="flow-card">
+      <h3>🟢 Sign Out Flow</h3>
+      <div class="flow-step">
+        <div class="step-num step-num-green">1</div>
+        <div class="step-text">User clicks <strong>Sign out</strong> in the nav bar</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-green">2</div>
+        <div class="step-text">Flask calls <strong>session.clear()</strong> — removes server-side session file</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-green">3</div>
+        <div class="step-text">Browser redirects to <strong>Microsoft logout endpoint</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-green">4</div>
+        <div class="step-text">Microsoft clears the <strong>SSO session</strong> across all apps</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num step-num-green">5</div>
+        <div class="step-text">User redirected back to <strong>/login</strong></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ACCESS MATRIX                                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="matrix-section">
+  <h2>Access Control Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Route</th>
+        <th>Decorator</th>
+        <th>Not Signed In</th>
+        <th>Signed In (no role)</th>
+        <th>Signed In (admin)</th>
+        <th>Visible in Nav</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Home</td>
+        <td><code>/</code></td>
+        <td><code>@login_required</code></td>
+        <td><span class="badge badge-grey">→ Login</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td>All signed-in users</td>
+      </tr>
+      <tr>
+        <td>About</td>
+        <td><code>/about</code></td>
+        <td><code>@login_required</code></td>
+        <td><span class="badge badge-grey">→ Login</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td>All signed-in users</td>
+      </tr>
+      <tr>
+        <td>Dashboard</td>
+        <td><code>/dashboard</code></td>
+        <td><code>@role_required("admin")</code></td>
+        <td><span class="badge badge-grey">→ Login</span></td>
+        <td><span class="badge badge-red">❌ 403</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td>Admin only</td>
+      </tr>
+      <tr>
+        <td>Profile</td>
+        <td><code>/profile</code></td>
+        <td><code>@role_required("admin")</code></td>
+        <td><span class="badge badge-grey">→ Login</span></td>
+        <td><span class="badge badge-red">❌ 403</span></td>
+        <td><span class="badge badge-green">✅ Access</span></td>
+        <td>Admin only</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TECH STACK                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tech-section">
+  <h2>Technology Stack</h2>
+  <div class="tech-grid">
+
+    <div class="tech-card">
+      <h4>Backend</h4>
+      <div class="tech-item"><span>Flask</span><span class="badge badge-blue">3.0+</span></div>
+      <div class="tech-item"><span>Python</span><span class="badge badge-blue">3.9+</span></div>
+      <div class="tech-item"><span>flask-session</span><span class="badge badge-blue">0.8+</span></div>
+      <div class="tech-item"><span>python-dotenv</span><span class="badge badge-grey">env config</span></div>
+    </div>
+
+    <div class="tech-card">
+      <h4>Authentication</h4>
+      <div class="tech-item"><span>MSAL Python</span><span class="badge badge-red">1.28+</span></div>
+      <div class="tech-item"><span>OAuth 2.0</span><span class="badge badge-grey">Auth Code Flow</span></div>
+      <div class="tech-item"><span>OpenID Connect</span><span class="badge badge-grey">ID Token</span></div>
+      <div class="tech-item"><span>CSRF Protection</span><span class="badge badge-grey">state param</span></div>
+    </div>
+
+    <div class="tech-card">
+      <h4>Azure AD</h4>
+      <div class="tech-item"><span>App Registration</span><span class="badge badge-red">Single Tenant</span></div>
+      <div class="tech-item"><span>App Roles</span><span class="badge badge-red">admin</span></div>
+      <div class="tech-item"><span>Security Groups</span><span class="badge badge-grey">P1/P2</span></div>
+      <div class="tech-item"><span>ID Token Claims</span><span class="badge badge-grey">roles, name, email</span></div>
+    </div>
+
+    <div class="tech-card">
+      <h4>Session Storage</h4>
+      <div class="tech-item"><span>Type</span><span class="badge badge-blue">Filesystem</span></div>
+      <div class="tech-item"><span>Location</span><span class="badge badge-grey">.flask_session/</span></div>
+      <div class="tech-item"><span>Cookie</span><span class="badge badge-grey">Session ID only</span></div>
+      <div class="tech-item"><span>Production</span><span class="badge badge-grey">Redis recommended</span></div>
+    </div>
+
+    <div class="tech-card">
+      <h4>Frontend</h4>
+      <div class="tech-item"><span>Jinja2 Templates</span><span class="badge badge-blue">Flask built-in</span></div>
+      <div class="tech-item"><span>HTML / CSS</span><span class="badge badge-grey">No framework</span></div>
+      <div class="tech-item"><span>Role-aware Nav</span><span class="badge badge-grey">Conditional tabs</span></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Flask SSO App — Solution Architecture · For Architect Review
+</div>
+
+</body>
+</html>
