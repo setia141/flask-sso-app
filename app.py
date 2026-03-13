@@ -1,8 +1,9 @@
 """
-Flask app with Azure AD SSO.
+Flask app with Azure AD SSO + Role-Based Access Control (RBAC).
 
-Public pages  : /  (home), /about
-Protected pages: /dashboard, /profile  — requires Azure AD login (any org member)
+Public pages    : /  (home), /about
+Protected pages : /profile   — any logged-in user (admin, user, viewer)
+                  /dashboard — admin only
 """
 import os
 import uuid
@@ -10,7 +11,7 @@ import msal
 from functools import wraps
 from flask import (
     Flask, render_template, redirect, request,
-    session, url_for
+    session, url_for, abort
 )
 from flask_session import Session
 from dotenv import load_dotenv
@@ -32,7 +33,7 @@ CLIENT_SECRET = os.environ["AZURE_CLIENT_SECRET"]
 TENANT_ID     = os.environ["AZURE_TENANT_ID"]
 
 AUTHORITY     = f"https://login.microsoftonline.com/{TENANT_ID}"
-REDIRECT_PATH = "/auth/callback"
+REDIRECT_PATH = "/callback"
 SCOPE         = ["User.Read"]          # MS Graph — basic profile info
 
 
@@ -64,7 +65,7 @@ def _get_token_from_cache():
     return result
 
 
-# ── Auth decorator ────────────────────────────────────────────────────────────
+# ── Auth decorators ───────────────────────────────────────────────────────────
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -73,6 +74,22 @@ def login_required(f):
             return redirect(url_for("login"))
         return f(*args, **kwargs)
     return decorated
+
+
+def role_required(*roles):
+    """Decorator that requires the user to have one of the specified Azure AD App Roles."""
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            if not session.get("user"):
+                session["next"] = request.url
+                return redirect(url_for("login"))
+            user_roles = session["user"].get("roles", [])
+            if not any(r in user_roles for r in roles):
+                return render_template("access_denied.html", user=session["user"], required_roles=roles), 403
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
 
 
 # ── Auth routes ───────────────────────────────────────────────────────────────
@@ -131,18 +148,20 @@ def logout():
 
 # ── Public pages ──────────────────────────────────────────────────────────────
 @app.route("/")
+@login_required
 def home():
     return render_template("home.html", user=session.get("user"))
 
 
 @app.route("/about")
+@login_required
 def about():
     return render_template("about.html", user=session.get("user"))
 
 
 # ── Protected pages ───────────────────────────────────────────────────────────
 @app.route("/dashboard")
-@login_required
+@role_required("admin")
 def dashboard():
     return render_template("dashboard.html", user=session["user"])
 
@@ -154,4 +173,4 @@ def profile():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host="localhost", port=3000, debug=True)
