@@ -23,7 +23,7 @@ A Flask web application with Azure Active Directory (Azure AD) Single Sign-On (S
 
 ## Overview
 
-This app uses **Microsoft Authentication Library (MSAL)** for Python to implement OAuth 2.0 Authorization Code flow with Azure AD. Sessions are stored server-side using `flask-session` (filesystem) to avoid browser cookie size limits.
+This app uses **Microsoft Authentication Library (MSAL)** for Python to implement the **OAuth 2.0 Authorization Code Flow with OpenID Connect (OIDC)**. User identity claims are stored in a Flask signed cookie session — no server-side session storage required, because only the small ID token claims are retained (no access token).
 
 Key features:
 - All pages require Azure AD sign-in — no public pages
@@ -33,7 +33,8 @@ Key features:
 - `@role_required("admin")` decorator for admin-only pages
 - Post-login redirect — users land on the page they originally requested
 - CSRF protection on the OAuth callback via a `state` parameter
-- Server-side filesystem sessions via `flask-session`
+- Session stored in a **Flask signed cookie** (no flask-session needed — ID token claims are small)
+- **ID token only** — no access token or Graph API calls. Only `email`, `openid`, `profile` scopes requested
 
 ---
 
@@ -46,7 +47,6 @@ flask_sso_app/
 ├── .env.example              # Template for environment variables
 ├── .env                      # Your local env variables (not committed)
 ├── .gitignore
-├── .flask_session/           # Server-side session files (auto-created, not committed)
 └── templates/
     ├── base.html             # Shared layout: nav bar, role badges, sign-out
     ├── home.html             # SSO page — any signed-in user
@@ -78,7 +78,13 @@ flask_sso_app/
 
 ## How Authentication Works
 
-The app implements the **OAuth 2.0 Authorization Code Flow**:
+The app implements the **OAuth 2.0 Authorization Code Flow with OpenID Connect (OIDC)**.
+
+This is the industry-standard, Microsoft-recommended flow for web applications that sign in users. It is more secure than the older Implicit Flow because the ID token is never exposed to the browser — it is exchanged server-to-server between Flask and Azure AD.
+
+---
+
+### High-level flow
 
 ```
 User visits any page
@@ -87,32 +93,146 @@ User visits any page
 @login_required / @role_required checks session
         │  no user in session
         ▼
-Redirect to /login
+Flask saves requested URL → redirects to /login
         │
         ▼
-Flask generates auth URL via MSAL → redirects to Microsoft login page
+MSAL generates CSRF state token + Azure AD authorization URL
         │
         ▼
-User signs in with their org Microsoft account
+Browser redirected to Microsoft login page
         │
         ▼
-Microsoft redirects to /callback with an authorization code
+User signs in with org Microsoft account (+ MFA if required by org policy)
         │
         ▼
-Flask exchanges code for tokens via MSAL
+Azure AD redirects browser to /callback with a short-lived authorization code
         │
         ▼
-User claims (name, email, roles, tenant) stored in server-side session
+Flask validates CSRF state → exchanges code for ID token (server-to-server via MSAL)
         │
         ▼
-User redirected back to the original page
+ID token claims (name, email, roles) stored in signed session cookie
+        │
+        ▼
+User redirected back to the original page they requested
 ```
 
-**Sign-out flow:**
-1. Flask clears the local server-side session
-2. User is redirected to Microsoft's logout endpoint
-3. Microsoft clears the SSO session
-4. User is returned to `/login`
+---
+
+### Step-by-step detail
+
+#### Phase 1 — Login initiation
+
+**Step 1** — User visits a protected page (e.g. `/dashboard`). No session cookie found.
+
+**Step 2** — The `@login_required` or `@role_required` decorator saves the requested URL in the session (`session["next"]`) and redirects to `/login`.
+
+**Step 3** — Flask's `/login` route:
+- Generates a random UUID as a `state` token and stores it in the session (`session["auth_state"]`)
+- Uses MSAL to build the Azure AD authorization URL with the following parameters:
+
+```
+https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/authorize
+  ?client_id=YOUR_CLIENT_ID
+  &response_type=code
+  &redirect_uri=http://localhost:3000/callback
+  &scope=openid profile email
+  &state=RANDOM_UUID
+  &response_mode=query
+```
+
+**Step 4** — Flask returns a `302` redirect, sending the browser to the Microsoft login page.
+
+---
+
+#### Phase 2 — Microsoft login
+
+**Step 5** — The browser loads the Microsoft login page hosted by Azure AD.
+
+**Step 6** — The user enters their org credentials. Azure AD applies MFA if required by the organisation's Conditional Access policy.
+
+**Step 7** — On successful authentication, Azure AD generates a short-lived **authorization code** (valid for ~10 minutes, single use) and redirects the browser back to the app:
+
+```
+http://localhost:3000/callback?code=AUTH_CODE&state=RANDOM_UUID
+```
+
+> The authorization code alone is useless — it cannot be used to get user data without also presenting the client secret, which only Flask holds.
+
+---
+
+#### Phase 3 — Token exchange (server-to-server)
+
+**Step 8** — The browser follows the redirect and hits Flask's `/callback` route, delivering the authorization code.
+
+**Step 9 — CSRF check** — Flask compares the `state` value in the request against the `state` stored in the session. If they do not match, the request is rejected with `400 State mismatch — possible CSRF`. This prevents an attacker from tricking a user into completing a login initiated by someone else.
+
+**Step 10** — Flask (via MSAL) makes a **server-to-server POST** to Azure AD's token endpoint. The browser is not involved in this step:
+
+```
+POST https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token
+
+grant_type=authorization_code
+code=AUTH_CODE
+client_id=YOUR_CLIENT_ID
+client_secret=YOUR_CLIENT_SECRET   ← never leaves the server
+redirect_uri=http://localhost:3000/callback
+```
+
+**Step 11** — Azure AD validates the code and client secret, then returns an **ID token** (a signed JWT):
+
+```json
+{
+  "name": "John Doe",
+  "preferred_username": "john@company.com",
+  "email": "john@company.com",
+  "roles": ["admin"],
+  "tid": "your-tenant-id",
+  "oid": "user-object-id",
+  "iat": 1710000000,
+  "exp": 1710003600
+}
+```
+
+> The client secret is never sent to or visible in the browser at any point. This is the primary security advantage of the Authorization Code Flow over the deprecated Implicit Flow.
+
+---
+
+#### Phase 4 — Session and redirect
+
+**Step 12** — Flask stores the ID token claims in the session cookie (`session["user"] = id_token_claims`). The token itself is discarded — only the claims are kept.
+
+**Step 13** — Flask redirects the user to the original URL they requested (`session.pop("next")`), or to `/dashboard` as default.
+
+**Step 14** — On the next request, `@role_required("admin")` reads `session["user"]["roles"]` and either renders the page or returns a `403 Access Denied`.
+
+---
+
+### Why Authorization Code Flow and not Implicit Flow?
+
+| | Authorization Code Flow (this app) | Implicit Flow (deprecated) |
+|---|---|---|
+| ID token location | Returned to server only | Returned directly to browser |
+| Client secret used | Yes — server-to-server | No |
+| Token in browser history/logs | No | Yes (in URL fragment) |
+| Microsoft recommendation | ✅ Recommended | ❌ Deprecated |
+
+---
+
+### Sign-out flow
+
+1. User clicks **Sign out**
+2. Flask calls `session.clear()` — removes the session cookie
+3. Browser redirected to Microsoft's logout endpoint:
+   ```
+   https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/logout
+     ?post_logout_redirect_uri=http://localhost:3000/login
+   ```
+4. Microsoft clears the SSO session across all Microsoft apps (Teams, Outlook, etc.)
+5. User is returned to `/login`
+
+> **Why redirect to `/login` and not `/`?**
+> All pages including `/` require sign-in. Redirecting to `/` after logout would immediately trigger another SSO login, creating a loop. Redirecting to `/login` lets the user choose when to sign back in.
 
 ---
 
@@ -131,6 +251,47 @@ Azure AD App Roles are defined in your app registration. When a user signs in, A
 Flask reads this claim and enforces access via the `@role_required` decorator. The nav bar also conditionally shows/hides tabs based on the user's roles.
 
 **If a user has no role assigned**, they can access SSO pages (Home, About) but will see an Access Denied page if they try to reach admin routes directly.
+
+---
+
+## Token Strategy
+
+The app requests **ID token only** — no access token or Microsoft Graph API calls are made.
+
+| Token | Requested | Used |
+|-------|-----------|------|
+| ID token | ✅ Yes | ✅ Yes — user identity, name, email, roles |
+| Access token | ❌ No | ❌ No — not needed |
+
+**Scopes requested:**
+
+| Scope | Added by | Purpose |
+|-------|----------|---------|
+| `openid` | MSAL automatically | Required for OIDC / ID token |
+| `profile` | MSAL automatically | Name claim in ID token |
+| `email` | Explicitly set | Email claim in ID token |
+
+The `roles` claim is included in the ID token automatically by Azure AD when App Roles are assigned — no extra scope needed.
+
+---
+
+## Azure Portal Registration Request
+
+When raising an app registration request in your organisation's Azure portal, use these answers:
+
+| Question | Answer |
+|----------|--------|
+| Application name | `My Flask SSO App` |
+| Application type | Web application |
+| Single tenant or multi-tenant | Single tenant (org only) |
+| Redirect / Callback URL | `http://localhost:3000/callback` (dev), `https://yourdomain.com/callback` (prod) |
+| Logout URL | `http://localhost:3000/logout` (dev), `https://yourdomain.com/logout` (prod) |
+| Will anyone sign into this application? | Yes — all org Associates (Assignment Required = No) |
+| Token type needed | ID token only |
+| Scopes required | `email`, `openid`, `profile` (no Graph API permissions needed) |
+| Does the app store user data? | No — session only, cleared on logout |
+| Access provided to specific AD groups? | Yes — `App-Admin` security group assigned the `admin` app role |
+| MFA required? | As per org policy |
 
 ---
 
@@ -270,12 +431,19 @@ Then assign the group to the role:
 
 ---
 
-### Step 7 — Verify the Redirect URI
+### Step 7 — Verify the Redirect URI and Set Logout URL
 
 1. Go back to **Azure Active Directory → App registrations → your app**
 2. In the left menu, click **Authentication**
 3. Under **Web → Redirect URIs**, confirm `http://localhost:3000/callback` is listed
-4. If it is missing, click **+ Add URI**, enter `http://localhost:3000/callback`, and click **Save**
+4. If it is missing, click **+ Add URI**, enter `http://localhost:3000/callback`
+5. Scroll down to **Front-channel logout URL**
+6. Enter your HTTPS logout URL — Azure AD requires HTTPS for this field
+   - **Local dev** — leave blank for now, your app logout still works independently
+   - **Production** — enter `https://yourdomain.com/logout`
+7. Click **Save**
+
+> The front-channel logout URL tells Azure AD to notify your app when the user signs out from any Microsoft app (Teams, Outlook etc.), so your app can also clear its session. Azure AD requires this to be HTTPS — `http://localhost` is not accepted here.
 
 ---
 
@@ -311,6 +479,7 @@ When you deploy to a server, add the production callback URL:
 ✅ App role "admin" defined with value exactly: admin
 ✅ Users or groups assigned the Admin role in Enterprise applications
 ✅ Redirect URI http://localhost:3000/callback confirmed in Authentication
+✅ Front-channel logout URL set in Authentication (HTTPS only — leave blank for local dev, add on production)
 ```
 
 ---
@@ -448,7 +617,4 @@ Azure AD Premium P1/P2 license is required to assign groups to app roles.
 - Use individual user assignment instead (free tier supported)
 
 ### Session cookie too large warning
-`flask-session` is not initialised correctly.
-- Ensure `flask-session` is installed: `pip install flask-session`
-- Confirm `Session(app)` is called in `app.py`
-- Session files are stored in `.flask_session/` folder
+This app stores only ID token claims in the session (no access token), so the cookie stays small (well under the 4KB browser limit). If you see this warning, check that you have not accidentally stored large objects in `session[]`.

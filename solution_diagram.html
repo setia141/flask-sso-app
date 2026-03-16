@@ -24,6 +24,24 @@
       margin-bottom: 36px;
     }
 
+    /* ── Section headings ── */
+    .section-heading {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: #e8eaed;
+      border-radius: 2px;
+    }
+
     /* ── Layout ── */
     .diagram {
       display: flex;
@@ -124,16 +142,11 @@
     .badge-blue   { background: #e8f0fe; color: #1a73e8; }
     .badge-red    { background: #fce8e6; color: #ea4335; }
     .badge-grey   { background: #f1f3f4; color: #666; }
+    .badge-orange { background: #fef3e2; color: #e37400; }
 
     /* ── Flow section ── */
     .flow-section {
-      margin-top: 40px;
-    }
-    .flow-section h2 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #1a1a1a;
+      margin-top: 48px;
     }
     .flows {
       display: flex;
@@ -174,9 +187,10 @@
       flex-shrink: 0;
       margin-top: 1px;
     }
-    .step-num-blue  { background: #e8f0fe; color: #1a73e8; }
-    .step-num-red   { background: #fce8e6; color: #ea4335; }
-    .step-num-green { background: #e6f4ea; color: #34a853; }
+    .step-num-blue   { background: #e8f0fe; color: #1a73e8; }
+    .step-num-red    { background: #fce8e6; color: #ea4335; }
+    .step-num-green  { background: #e6f4ea; color: #34a853; }
+    .step-num-orange { background: #fef3e2; color: #e37400; }
     .step-text {
       font-size: 12px;
       color: #444;
@@ -184,16 +198,132 @@
     }
     .step-text strong { color: #1a1a1a; }
 
+    /* ── OIDC sequence diagram ── */
+    .oidc-section {
+      margin-top: 48px;
+    }
+    .oidc-table-wrap {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      overflow-x: auto;
+    }
+    .oidc-actors {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8eaed;
+      padding-bottom: 16px;
+    }
+    .oidc-actor {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin: 0 6px;
+    }
+    .actor-browser { background: #5f6368; }
+    .actor-flask   { background: #1a73e8; }
+    .actor-azure   { background: #ea4335; }
+
+    .oidc-seq {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .oidc-seq td {
+      padding: 7px 10px;
+      font-size: 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .oidc-seq tr:last-child td { border-bottom: none; }
+    .oidc-seq .seq-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .oidc-seq .seq-num-browser { background: #f1f3f4; color: #5f6368; }
+    .oidc-seq .seq-num-flask   { background: #e8f0fe; color: #1a73e8; }
+    .oidc-seq .seq-num-azure   { background: #fce8e6; color: #ea4335; }
+    .oidc-seq .from-col { width: 90px; font-weight: 600; font-size: 11px; }
+    .oidc-seq .arrow-col { width: 100px; text-align: center; font-size: 18px; color: #aaa; }
+    .oidc-seq .to-col { width: 90px; font-weight: 600; font-size: 11px; }
+    .oidc-seq .desc-col { color: #444; }
+    .oidc-seq .http-col {
+      width: 200px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #888;
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 4px 8px !important;
+    }
+    .method-get  { color: #1a73e8; font-weight: 700; }
+    .method-post { color: #34a853; font-weight: 700; }
+    .method-302  { color: #e37400; font-weight: 700; }
+    .section-divider {
+      background: #f8f9fa;
+    }
+    .section-divider td {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      padding: 10px 10px 4px !important;
+    }
+    .highlight-row td { background: #fffde7; }
+
+    /* ── RBAC section ── */
+    .rbac-section {
+      margin-top: 48px;
+    }
+    .rbac-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .rbac-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      flex: 1;
+      min-width: 220px;
+    }
+    .rbac-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #1a1a1a;
+    }
+    .rbac-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #444;
+      padding: 6px 0;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    .rbac-row:last-child { border-bottom: none; }
+    .rbac-label { font-weight: 600; color: #888; font-size: 11px; }
+
     /* ── Access matrix ── */
     .matrix-section {
-      margin-top: 40px;
+      margin-top: 48px;
     }
-    .matrix-section h2 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    table {
+    table.main-table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
@@ -201,7 +331,7 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
-    th {
+    table.main-table th {
       background: #f8f9fa;
       font-size: 12px;
       font-weight: 700;
@@ -210,23 +340,18 @@
       border-bottom: 2px solid #e8eaed;
       color: #444;
     }
-    td {
+    table.main-table td {
       font-size: 12px;
       padding: 11px 16px;
       border-bottom: 1px solid #f1f3f4;
       color: #444;
     }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #fafafa; }
+    table.main-table tr:last-child td { border-bottom: none; }
+    table.main-table tr:hover td { background: #fafafa; }
 
     /* ── Tech stack ── */
     .tech-section {
-      margin-top: 40px;
-    }
-    .tech-section h2 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 20px;
+      margin-top: 48px;
     }
     .tech-grid {
       display: flex;
@@ -261,21 +386,37 @@
     .tech-item:last-child { border-bottom: none; }
 
     .footer {
-      margin-top: 40px;
+      margin-top: 48px;
       font-size: 11px;
       color: #aaa;
       text-align: center;
     }
+
+    /* ── Key insight box ── */
+    .insight {
+      background: #e8f0fe;
+      border-left: 4px solid #1a73e8;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #1a1a1a;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+    .insight strong { color: #1a73e8; }
   </style>
 </head>
 <body>
 
-<h1>Flask App — Azure AD SSO Solution Diagram</h1>
-<p class="subtitle">Architecture overview for review · OAuth 2.0 Authorization Code Flow + Role-Based Access Control</p>
+<h1>Flask App — Azure AD SSO + RBAC Solution Diagram</h1>
+<p class="subtitle">Architecture overview for Architect review · OAuth 2.0 Authorization Code Flow + OpenID Connect (OIDC) + Role-Based Access Control (RBAC)</p>
+
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- ARCHITECTURE ZONES                                      -->
+<!-- SECTION 1: ARCHITECTURE ZONES                          -->
 <!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-heading">1 — Architecture Overview</div>
+
 <div class="diagram">
 
   <!-- BROWSER -->
@@ -287,7 +428,8 @@
         <ul>
           <li>SSO Sign in / Sign out</li>
           <li>Navigate pages</li>
-          <li>Session ID cookie (small)</li>
+          <li>Session cookie (signed, small)</li>
+          <li>No token stored in browser</li>
         </ul>
       </div>
     </div>
@@ -333,7 +475,7 @@
       <div class="box">
         <div class="box-title"><span class="icon">⚙️</span> Auth Routes</div>
         <ul>
-          <li>/login — Start OAuth flow</li>
+          <li>/login — Start OIDC flow</li>
           <li>/callback — Token exchange</li>
           <li>/logout — Clear session</li>
         </ul>
@@ -342,10 +484,10 @@
       <div class="box">
         <div class="box-title"><span class="icon">💾</span> Session Store</div>
         <ul>
-          <li>flask-session (filesystem)</li>
-          <li>Server-side storage</li>
-          <li>Token cache + user claims</li>
-          <li>Cookie = session ID only</li>
+          <li>Flask built-in cookie session</li>
+          <li>Signed with FLASK_SECRET_KEY</li>
+          <li>ID token claims only (small)</li>
+          <li>Cleared on logout</li>
         </ul>
       </div>
 
@@ -355,30 +497,30 @@
   <!-- Arrow down -->
   <div class="arrow-block">
     <div class="arrow-item">
-      <span class="arrow-label">① Redirect to login</span>
+      <span class="arrow-label">① Redirect to /authorize</span>
       <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
       <svg width="12" height="8"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
     </div>
     <div class="arrow-item">
       <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
       <svg width="12" height="8" style="transform:rotate(180deg)"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
-      <span class="arrow-label">④ ID token + roles</span>
+      <span class="arrow-label">④ ID token (JWT) + roles claim</span>
     </div>
     <div class="arrow-item">
-      <span class="arrow-label">② Auth code request</span>
+      <span class="arrow-label">② Auth code request (browser)</span>
       <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
       <svg width="12" height="8"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
     </div>
     <div class="arrow-item">
       <svg class="arrow-svg" width="2" height="30"><rect width="2" height="30" fill="#aaa"/></svg>
       <svg width="12" height="8" style="transform:rotate(180deg)"><polygon points="6,8 0,0 12,0" fill="#aaa"/></svg>
-      <span class="arrow-label">③ Auth code callback</span>
+      <span class="arrow-label">③ Auth code callback → /callback</span>
     </div>
   </div>
 
   <!-- AZURE AD -->
   <div class="zone zone-azure">
-    <div class="zone-label">Microsoft Azure Active Directory</div>
+    <div class="zone-label">Microsoft Azure Active Directory (Entra ID)</div>
     <div class="boxes">
 
       <div class="box">
@@ -388,6 +530,7 @@
           <li>Client Secret</li>
           <li>Tenant ID</li>
           <li>Redirect URI: /callback</li>
+          <li>Single tenant</li>
         </ul>
       </div>
 
@@ -396,27 +539,30 @@
         <ul>
           <li><span class="badge badge-red">admin</span> &nbsp; Admin role</li>
           <li>Defined in App Manifest</li>
-          <li>Included in ID token</li>
+          <li>Emitted in ID token automatically</li>
+          <li>No extra scope needed</li>
         </ul>
       </div>
 
       <div class="box">
         <div class="box-title"><span class="icon">👥</span> Users & Groups</div>
         <ul>
+          <li>Assignment Required: No</li>
+          <li>All org users can sign in</li>
           <li>Security Group: App-Admin</li>
-          <li>Assigned role: admin</li>
-          <li>All org users can SSO</li>
-          <li>Only admins get role claim</li>
+          <li>App-Admin → assigned admin role</li>
+          <li>Only admins get roles claim</li>
         </ul>
       </div>
 
       <div class="box">
-        <div class="box-title"><span class="icon">🔑</span> OAuth 2.0 / OIDC</div>
+        <div class="box-title"><span class="icon">🔑</span> OIDC Endpoints</div>
         <ul>
-          <li>Authorization endpoint</li>
-          <li>Token endpoint</li>
-          <li>MSAL Python library</li>
-          <li>CSRF state validation</li>
+          <li>/oauth2/v2.0/authorize</li>
+          <li>/oauth2/v2.0/token</li>
+          <li>/oauth2/v2.0/logout</li>
+          <li>CSRF: state parameter</li>
+          <li>Scopes: openid, profile, email</li>
         </ul>
       </div>
 
@@ -427,93 +573,249 @@
 
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- AUTH FLOWS                                              -->
+<!-- SECTION 2: OIDC SEQUENCE DIAGRAM                       -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="oidc-section">
+  <div class="section-heading">2 — OIDC Authorization Code Flow (Detailed Sequence)</div>
+
+  <div class="oidc-table-wrap">
+
+    <div class="oidc-actors">
+      <div class="oidc-actor actor-browser">🌐 Browser (User)</div>
+      <div class="oidc-actor actor-flask">⚙️ Flask App</div>
+      <div class="oidc-actor actor-azure">🏢 Azure AD (Entra ID)</div>
+    </div>
+
+    <table class="oidc-seq">
+      <tbody>
+
+        <!-- Login initiation -->
+        <tr class="section-divider"><td colspan="5">Phase 1 — Login Initiation</td></tr>
+
+        <tr>
+          <td><span class="seq-num seq-num-browser">1</span></td>
+          <td class="from-col" style="color:#5f6368">Browser</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col">User visits any protected page (e.g. <strong>/dashboard</strong>). No session found.</td>
+          <td class="http-col"><span class="method-get">GET</span> /dashboard</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-flask">2</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#5f6368">Browser</td>
+          <td class="desc-col"><strong>@login_required</strong> saves requested URL in session. Redirects to <strong>/login</strong>.</td>
+          <td class="http-col"><span class="method-302">302</span> /login</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-flask">3</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">—</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col">MSAL generates a random <strong>state</strong> (UUID) for CSRF protection. Saved in session. Builds Azure AD authorization URL.</td>
+          <td class="http-col">state = uuid4()</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-flask">4</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#5f6368">Browser</td>
+          <td class="desc-col">Redirects browser to Microsoft login page with all OAuth parameters.</td>
+          <td class="http-col"><span class="method-302">302</span> /authorize?<br>client_id=...&amp;<br>response_type=code&amp;<br>scope=openid+profile+email&amp;<br>state=UUID&amp;<br>redirect_uri=/callback</td>
+        </tr>
+
+        <!-- Microsoft login -->
+        <tr class="section-divider"><td colspan="5">Phase 2 — Microsoft Login</td></tr>
+
+        <tr>
+          <td><span class="seq-num seq-num-browser">5</span></td>
+          <td class="from-col" style="color:#5f6368">Browser</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#ea4335">Azure AD</td>
+          <td class="desc-col">Browser follows redirect to Microsoft login page.</td>
+          <td class="http-col"><span class="method-get">GET</span> /oauth2/v2.0/authorize</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-azure">6</span></td>
+          <td class="from-col" style="color:#ea4335">Azure AD</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#5f6368">Browser</td>
+          <td class="desc-col">Azure AD returns login page. User enters org credentials (+ MFA if required by org policy).</td>
+          <td class="http-col">200 Login HTML</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-azure">7</span></td>
+          <td class="from-col" style="color:#ea4335">Azure AD</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#5f6368">Browser</td>
+          <td class="desc-col">Azure AD validates credentials. Generates a short-lived <strong>authorization code</strong>. Redirects browser to app's callback URL.</td>
+          <td class="http-col"><span class="method-302">302</span> /callback?<br>code=AUTH_CODE&amp;<br>state=UUID</td>
+        </tr>
+
+        <!-- Token exchange -->
+        <tr class="section-divider"><td colspan="5">Phase 3 — Token Exchange (server-to-server)</td></tr>
+
+        <tr>
+          <td><span class="seq-num seq-num-browser">8</span></td>
+          <td class="from-col" style="color:#5f6368">Browser</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col">Browser follows redirect, delivers auth code to Flask.</td>
+          <td class="http-col"><span class="method-get">GET</span> /callback?code=...&amp;state=...</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><span class="seq-num seq-num-flask">9</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">—</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col"><strong>CSRF check:</strong> state from request must match state saved in session. Mismatch → 400 error.</td>
+          <td class="http-col">state == session["auth_state"]</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-flask">10</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#ea4335">Azure AD</td>
+          <td class="desc-col">Flask (via MSAL) makes a <strong>server-to-server</strong> POST to exchange the auth code for tokens. Includes client secret. Browser not involved.</td>
+          <td class="http-col"><span class="method-post">POST</span> /oauth2/v2.0/token<br>grant_type=authorization_code<br>code=AUTH_CODE<br>client_secret=SECRET<br>redirect_uri=/callback</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><span class="seq-num seq-num-azure">11</span></td>
+          <td class="from-col" style="color:#ea4335">Azure AD</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col">Azure AD returns <strong>ID token (JWT)</strong> containing user claims. <em>Client secret never leaves the server.</em></td>
+          <td class="http-col">200 { id_token: JWT,<br>&nbsp;&nbsp;claims: {<br>&nbsp;&nbsp;&nbsp;&nbsp;name, email,<br>&nbsp;&nbsp;&nbsp;&nbsp;roles: ["admin"],<br>&nbsp;&nbsp;&nbsp;&nbsp;tid, oid, ... } }</td>
+        </tr>
+
+        <!-- Session + redirect -->
+        <tr class="section-divider"><td colspan="5">Phase 4 — Session & Redirect</td></tr>
+
+        <tr>
+          <td><span class="seq-num seq-num-flask">12</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">—</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col">ID token claims stored in <strong>server-side session</strong> (signed cookie). Token itself is discarded.</td>
+          <td class="http-col">session["user"] = claims</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-flask">13</span></td>
+          <td class="from-col" style="color:#1a73e8">Flask</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#5f6368">Browser</td>
+          <td class="desc-col">Flask redirects user to the original page they requested before login.</td>
+          <td class="http-col"><span class="method-302">302</span> /dashboard</td>
+        </tr>
+        <tr>
+          <td><span class="seq-num seq-num-browser">14</span></td>
+          <td class="from-col" style="color:#5f6368">Browser</td>
+          <td class="arrow-col">→</td>
+          <td class="to-col" style="color:#1a73e8">Flask</td>
+          <td class="desc-col"><strong>@role_required("admin")</strong> checks <code>session["user"]["roles"]</code>. Admin → page rendered. No role → 403.</td>
+          <td class="http-col"><span class="method-get">GET</span> /dashboard<br>(with session cookie)</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div class="insight">
+      <strong>Key security property:</strong> The client secret and ID token are only ever exchanged between Flask and Azure AD (step 10–11). The browser only ever sees a short-lived authorization code, which is useless on its own. This is the primary security advantage of the <strong>Authorization Code Flow</strong> over the deprecated Implicit Flow.
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: AUTH FLOWS SUMMARY                          -->
 <!-- ═══════════════════════════════════════════════════════ -->
 <div class="flow-section">
-  <h2>Authentication Flows</h2>
+  <div class="section-heading">3 — Application Flow Summary</div>
   <div class="flows">
 
     <div class="flow-card">
-      <h3>🔵 SSO Login Flow (all org users)</h3>
+      <h3>🔵 SSO Login (all org users)</h3>
       <div class="flow-step">
         <div class="step-num step-num-blue">1</div>
         <div class="step-text">User visits any page (e.g. <strong>/</strong> or <strong>/about</strong>)</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">2</div>
-        <div class="step-text"><strong>@login_required</strong> checks session — no user found</div>
+        <div class="step-text"><strong>@login_required</strong> checks session — no user found, saves target URL</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">3</div>
-        <div class="step-text">Flask redirects to <strong>/login</strong> — MSAL generates Azure AD auth URL</div>
+        <div class="step-text">Flask → <strong>/login</strong> → MSAL builds Azure AD auth URL with CSRF state</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">4</div>
-        <div class="step-text">Browser redirects to <strong>Microsoft login page</strong></div>
+        <div class="step-text">Browser redirected to <strong>Microsoft login page</strong></div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">5</div>
-        <div class="step-text">User signs in with their <strong>org Microsoft account</strong></div>
+        <div class="step-text">User signs in with <strong>org Microsoft account</strong> (+ MFA if required)</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">6</div>
-        <div class="step-text">Azure AD redirects to <strong>/callback</strong> with auth code</div>
+        <div class="step-text">Azure AD returns auth code → browser → <strong>/callback</strong></div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">7</div>
-        <div class="step-text">Flask exchanges auth code for <strong>ID token</strong> via MSAL</div>
+        <div class="step-text">Flask validates CSRF state, exchanges code for <strong>ID token</strong> (server-to-server)</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-blue">8</div>
-        <div class="step-text">User claims stored in <strong>server-side session</strong> — redirected to original page</div>
+        <div class="step-text">User claims stored in session → redirected to original page</div>
       </div>
     </div>
 
     <div class="flow-card">
-      <h3>🔴 Admin Role Check Flow</h3>
+      <h3>🔴 Admin Role Check (RBAC)</h3>
       <div class="flow-step">
         <div class="step-num step-num-red">1</div>
         <div class="step-text">Signed-in user visits <strong>/dashboard</strong> or <strong>/profile</strong></div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-red">2</div>
-        <div class="step-text"><strong>@role_required("admin")</strong> reads <strong>roles</strong> claim from session</div>
+        <div class="step-text"><strong>@role_required("admin")</strong> reads <code>roles</code> claim from session</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-red">3a</div>
-        <div class="step-text">✅ User has <strong>admin</strong> role → page is rendered</div>
+        <div class="step-text">✅ <code>roles: ["admin"]</code> present → page is rendered</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-red">3b</div>
-        <div class="step-text">❌ User does not have <strong>admin</strong> role → <strong>403 Access Denied</strong> page shown</div>
+        <div class="step-text">❌ No admin role → <strong>403 Access Denied</strong> page shown</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-red">4</div>
-        <div class="step-text">Admin tabs are also <strong>hidden in the nav bar</strong> for non-admin users</div>
+        <div class="step-text">Admin tabs are also <strong>hidden in the nav bar</strong> for non-admin users (Jinja2 conditional)</div>
       </div>
     </div>
 
     <div class="flow-card">
-      <h3>🟢 Sign Out Flow</h3>
+      <h3>🟢 Sign Out</h3>
       <div class="flow-step">
         <div class="step-num step-num-green">1</div>
-        <div class="step-text">User clicks <strong>Sign out</strong> in the nav bar</div>
+        <div class="step-text">User clicks <strong>Sign out</strong></div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-green">2</div>
-        <div class="step-text">Flask calls <strong>session.clear()</strong> — removes server-side session file</div>
+        <div class="step-text">Flask calls <strong>session.clear()</strong> — removes local session data</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-green">3</div>
-        <div class="step-text">Browser redirects to <strong>Microsoft logout endpoint</strong></div>
+        <div class="step-text">Browser redirected to <strong>Microsoft logout endpoint</strong></div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-green">4</div>
-        <div class="step-text">Microsoft clears the <strong>SSO session</strong> across all apps</div>
+        <div class="step-text">Microsoft clears the <strong>SSO session</strong> across all Microsoft apps</div>
       </div>
       <div class="flow-step">
         <div class="step-num step-num-green">5</div>
-        <div class="step-text">User redirected back to <strong>/login</strong></div>
+        <div class="step-text">User returned to <strong>/login</strong></div>
       </div>
     </div>
 
@@ -522,11 +824,75 @@
 
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- ACCESS MATRIX                                          -->
+<!-- SECTION 4: RBAC DESIGN                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="rbac-section">
+  <div class="section-heading">4 — RBAC Design</div>
+  <div class="rbac-grid">
+
+    <div class="rbac-card">
+      <h3>RBAC Concept Mapping</h3>
+      <div class="rbac-row"><span class="rbac-label">RBAC Concept</span><span class="rbac-label">Implementation</span></div>
+      <div class="rbac-row"><span>Roles</span><span><span class="badge badge-red">admin</span> (Azure AD App Role)</span></div>
+      <div class="rbac-row"><span>Role assignment</span><span>Azure Portal → Enterprise Apps → Users &amp; Groups</span></div>
+      <div class="rbac-row"><span>Role claim</span><span><code>roles: ["admin"]</code> in ID token</span></div>
+      <div class="rbac-row"><span>Role check</span><span><code>@role_required("admin")</code> decorator</span></div>
+      <div class="rbac-row"><span>Access decision</span><span>Flask reads claim from session, allows or returns 403</span></div>
+      <div class="rbac-row"><span>UI enforcement</span><span>Admin tabs hidden via Jinja2 conditional</span></div>
+    </div>
+
+    <div class="rbac-card">
+      <h3>Assignment Required vs App Role</h3>
+      <div class="rbac-row"><span class="rbac-label">Setting</span><span class="rbac-label">Controls</span></div>
+      <div class="rbac-row">
+        <span>Assignment Required = <strong>No</strong></span>
+        <span>Who can <strong>sign in</strong> — all org users</span>
+      </div>
+      <div class="rbac-row">
+        <span>App-Admin group → admin role</span>
+        <span>Who gets <strong>roles claim</strong> in token</span>
+      </div>
+      <div class="rbac-row">
+        <span>Non-admin user token</span>
+        <span><code>roles: []</code> — signs in, sees Home/About</span>
+      </div>
+      <div class="rbac-row">
+        <span>Admin user token</span>
+        <span><code>roles: ["admin"]</code> — sees all pages</span>
+      </div>
+      <div style="margin-top:12px; font-size:12px; color:#666; line-height:1.6">
+        These are <strong>independent</strong> settings. The group assignment does not restrict sign-in — it only grants an elevated role claim to specific users.
+      </div>
+    </div>
+
+    <div class="rbac-card">
+      <h3>Extending Roles (future)</h3>
+      <div style="font-size:12px; color:#444; line-height:1.8; margin-bottom:12px">
+        Adding more roles requires no code change beyond the decorator:
+      </div>
+      <div style="background:#f8f9fa; border-radius:8px; padding:12px; font-family:monospace; font-size:12px; color:#444; line-height:1.8">
+        <span style="color:#888"># Current</span><br>
+        @role_required(<span style="color:#34a853">"admin"</span>)<br><br>
+        <span style="color:#888"># Future — either role</span><br>
+        @role_required(<span style="color:#34a853">"admin"</span>, <span style="color:#34a853">"editor"</span>)<br><br>
+        <span style="color:#888"># Future — team-specific</span><br>
+        @role_required(<span style="color:#34a853">"finance-admin"</span>)
+      </div>
+      <div style="margin-top:10px; font-size:12px; color:#666">
+        New roles are defined in Azure AD App Manifest and assigned to users/groups in the portal.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5: ACCESS CONTROL MATRIX                      -->
 <!-- ═══════════════════════════════════════════════════════ -->
 <div class="matrix-section">
-  <h2>Access Control Matrix</h2>
-  <table>
+  <div class="section-heading">5 — Access Control Matrix</div>
+  <table class="main-table">
     <thead>
       <tr>
         <th>Page</th>
@@ -581,17 +947,127 @@
 
 
 <!-- ═══════════════════════════════════════════════════════ -->
-<!-- TECH STACK                                              -->
+<!-- SECTION 6: TOKEN STRATEGY                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="matrix-section">
+  <div class="section-heading">6 — Token Strategy</div>
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Requested</th>
+        <th>Used</th>
+        <th>Stored In</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID Token (JWT)</td>
+        <td><span class="badge badge-green">✅ Yes</span></td>
+        <td><span class="badge badge-green">✅ Yes</span></td>
+        <td>Claims stored in session. Token discarded.</td>
+        <td>User identity — name, email, roles, tenant ID</td>
+      </tr>
+      <tr>
+        <td>Access Token</td>
+        <td><span class="badge badge-red">❌ No</span></td>
+        <td><span class="badge badge-red">❌ No</span></td>
+        <td>—</td>
+        <td>Not needed — no Microsoft Graph API calls</td>
+      </tr>
+      <tr>
+        <td>Refresh Token</td>
+        <td><span class="badge badge-red">❌ No</span></td>
+        <td><span class="badge badge-red">❌ No</span></td>
+        <td>—</td>
+        <td>Not needed — re-login on session expiry</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Scope</th>
+        <th>Added By</th>
+        <th>Purpose</th>
+        <th>In ID Token</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>openid</code></td>
+        <td>MSAL automatically</td>
+        <td>Required for OIDC — enables ID token issuance</td>
+        <td><span class="badge badge-green">✅ Yes</span></td>
+      </tr>
+      <tr>
+        <td><code>profile</code></td>
+        <td>MSAL automatically</td>
+        <td>Adds name claim to ID token</td>
+        <td><span class="badge badge-green">✅ Yes</span></td>
+      </tr>
+      <tr>
+        <td><code>email</code></td>
+        <td>Explicitly requested</td>
+        <td>Adds email / preferred_username claim</td>
+        <td><span class="badge badge-green">✅ Yes</span></td>
+      </tr>
+      <tr>
+        <td><code>roles</code></td>
+        <td>Azure AD automatically</td>
+        <td>App role claims — emitted when App Roles are assigned. No scope needed.</td>
+        <td><span class="badge badge-green">✅ Yes (auto)</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7: AZURE PORTAL REGISTRATION                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="matrix-section">
+  <div class="section-heading">7 — Azure Portal Registration Answers</div>
+  <table class="main-table">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Application name</td><td>My Flask SSO App</td></tr>
+      <tr><td>Application type</td><td>Web application</td></tr>
+      <tr><td>Single or multi-tenant</td><td>Single tenant (org users only)</td></tr>
+      <tr><td>Will anyone sign into this application?</td><td>Yes — all org Associates (Assignment Required = No)</td></tr>
+      <tr><td>Redirect / Callback URL (dev)</td><td><code>http://localhost:3000/callback</code></td></tr>
+      <tr><td>Redirect / Callback URL (prod)</td><td><code>https://yourdomain.com/callback</code></td></tr>
+      <tr><td>Front-channel logout URL</td><td><code>https://yourdomain.com/logout</code> (HTTPS required by Azure)</td></tr>
+      <tr><td>Token type needed</td><td>ID token only (no Access token, no Graph API)</td></tr>
+      <tr><td>Scopes / permissions required</td><td><code>openid</code>, <code>profile</code>, <code>email</code> — no Graph API permissions</td></tr>
+      <tr><td>Does the app store user data?</td><td>No — session only, cleared on logout</td></tr>
+      <tr><td>Admin access via AD group?</td><td>Yes — <code>App-Admin</code> security group assigned the <code>admin</code> App Role (done manually post-provisioning)</td></tr>
+      <tr><td>MFA required?</td><td>As per org policy</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8: TECH STACK                                  -->
 <!-- ═══════════════════════════════════════════════════════ -->
 <div class="tech-section">
-  <h2>Technology Stack</h2>
+  <div class="section-heading">8 — Technology Stack</div>
   <div class="tech-grid">
 
     <div class="tech-card">
       <h4>Backend</h4>
       <div class="tech-item"><span>Flask</span><span class="badge badge-blue">3.0+</span></div>
       <div class="tech-item"><span>Python</span><span class="badge badge-blue">3.9+</span></div>
-      <div class="tech-item"><span>flask-session</span><span class="badge badge-blue">0.8+</span></div>
       <div class="tech-item"><span>python-dotenv</span><span class="badge badge-grey">env config</span></div>
     </div>
 
@@ -599,7 +1075,7 @@
       <h4>Authentication</h4>
       <div class="tech-item"><span>MSAL Python</span><span class="badge badge-red">1.28+</span></div>
       <div class="tech-item"><span>OAuth 2.0</span><span class="badge badge-grey">Auth Code Flow</span></div>
-      <div class="tech-item"><span>OpenID Connect</span><span class="badge badge-grey">ID Token</span></div>
+      <div class="tech-item"><span>OpenID Connect</span><span class="badge badge-grey">OIDC / ID Token</span></div>
       <div class="tech-item"><span>CSRF Protection</span><span class="badge badge-grey">state param</span></div>
     </div>
 
@@ -607,22 +1083,22 @@
       <h4>Azure AD</h4>
       <div class="tech-item"><span>App Registration</span><span class="badge badge-red">Single Tenant</span></div>
       <div class="tech-item"><span>App Roles</span><span class="badge badge-red">admin</span></div>
-      <div class="tech-item"><span>Security Groups</span><span class="badge badge-grey">P1/P2</span></div>
+      <div class="tech-item"><span>Security Group</span><span class="badge badge-grey">App-Admin</span></div>
       <div class="tech-item"><span>ID Token Claims</span><span class="badge badge-grey">roles, name, email</span></div>
     </div>
 
     <div class="tech-card">
       <h4>Session Storage</h4>
-      <div class="tech-item"><span>Type</span><span class="badge badge-blue">Filesystem</span></div>
-      <div class="tech-item"><span>Location</span><span class="badge badge-grey">.flask_session/</span></div>
-      <div class="tech-item"><span>Cookie</span><span class="badge badge-grey">Session ID only</span></div>
-      <div class="tech-item"><span>Production</span><span class="badge badge-grey">Redis recommended</span></div>
+      <div class="tech-item"><span>Type</span><span class="badge badge-blue">Signed Cookie</span></div>
+      <div class="tech-item"><span>Signed by</span><span class="badge badge-grey">FLASK_SECRET_KEY</span></div>
+      <div class="tech-item"><span>Content</span><span class="badge badge-grey">ID token claims only</span></div>
+      <div class="tech-item"><span>Production</span><span class="badge badge-orange">Redis recommended</span></div>
     </div>
 
     <div class="tech-card">
       <h4>Frontend</h4>
       <div class="tech-item"><span>Jinja2 Templates</span><span class="badge badge-blue">Flask built-in</span></div>
-      <div class="tech-item"><span>HTML / CSS</span><span class="badge badge-grey">No framework</span></div>
+      <div class="tech-item"><span>HTML / CSS</span><span class="badge badge-grey">No JS framework</span></div>
       <div class="tech-item"><span>Role-aware Nav</span><span class="badge badge-grey">Conditional tabs</span></div>
     </div>
 
@@ -630,7 +1106,7 @@
 </div>
 
 <div class="footer">
-  Flask SSO App — Solution Architecture · For Architect Review
+  Flask SSO App — Solution Architecture · OAuth 2.0 Authorization Code Flow + OIDC + RBAC · For Architect Review
 </div>
 
 </body>
