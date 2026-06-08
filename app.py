@@ -113,7 +113,7 @@ def auth_callback():
     if "error" in request.args:
         logger.error("[CALLBACK] Azure AD returned error: %s — %s",
             request.args.get("error"), request.args.get("error_description"))
-        return f"Login error: {request.args['error_description']}", 400
+        return f"Login error: {request.args['error_description']}", 400, {"Content-Type": "text/plain; charset=utf-8"}
 
     logger.info("[CALLBACK] Step 3 — Authorization code received from Azure AD")
     logger.info("[CALLBACK] Step 4 — Exchanging authorization code for tokens via MSAL")
