@@ -15,6 +15,7 @@ from flask import (
     Flask, render_template, redirect, request,
     session, url_for, abort
 )
+from markupsafe import escape
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.DEBUG)
@@ -113,7 +114,7 @@ def auth_callback():
     if "error" in request.args:
         logger.error("[CALLBACK] Azure AD returned error: %s — %s",
             request.args.get("error"), request.args.get("error_description"))
-        return f"Login error: {request.args['error_description']}", 400
+        return f"Login error: {escape(request.args['error_description'])}", 400
 
     logger.info("[CALLBACK] Step 3 — Authorization code received from Azure AD")
     logger.info("[CALLBACK] Step 4 — Exchanging authorization code for tokens via MSAL")
